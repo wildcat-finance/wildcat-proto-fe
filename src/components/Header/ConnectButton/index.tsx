@@ -143,7 +143,7 @@ function ConnectButton() {
                       <div className="flex items-center justify-center h-full flex-col gap-2 px-4 sm:px-6 pb-3 md:py-2 overflow-y-auto max-h-[60vh]">
                         {isConnected && isWrongNetwork && (
                           <Button
-                            variant="silver"
+                            variant="black"
                             className="w-full"
                             onClick={() => switchNetwork?.(TargetChainId)}
                           >
