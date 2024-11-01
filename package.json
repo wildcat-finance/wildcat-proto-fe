@@ -18,7 +18,7 @@
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.4",
     "@wildcatfi/subgraph-hooks": "^1.0.0",
-    "@wildcatfi/wildcat-sdk": "^2.0.82",
+    "@wildcatfi/wildcat-sdk": "3.0.2",
     "classnames": "^2.3.2",
     "dayjs": "^1.11.10",
     "ethers": "^5.7.0",
