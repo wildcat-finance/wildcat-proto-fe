@@ -96,7 +96,7 @@ function ConnectButton() {
       <Button className="rounded-sm" onClick={openModal} variant="silver">
         <div className="flex items-center gap-2">
           <span className="text-black text-xs">{getButtonText()}</span>
-          <RiWallet3Line className="w-5" />
+          <RiWallet3Line className="w-4 h-4" />
         </div>
       </Button>
       <Transition appear show={isOpen} as={Fragment}>
@@ -128,22 +128,19 @@ function ConnectButton() {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="transform transition-all w-full">
+                <Dialog.Panel className="transform transition-all w-full max-w-sm sm:max-w-sm md:max-w-md lg:max-w-[24rem]">
                   <div className="flex flex-col items-center">
-                    <Paper
-                      className="bg-sand p-2 rounded-sm"
-                      style={{ width: "20vw" }}
-                    >
+                    <Paper className="bg-sand p-2 sm:p-4 rounded-sm w-full">
                       <div className="flex items-center justify-center mb-4 relative">
                         <p className="text-2xl font-medium select-none">
-                          {isConnected ? "Account" : " Select Wallet"}
+                          {isConnected ? "Account" : "Select Wallet"}
                         </p>
                         <RiCloseLine
-                          className="absolute w-6 right-0 top-0"
+                          className="absolute right-0 top-1/2 transform -translate-y-1/2 w-6 h-6 cursor-pointer"
                           onClick={closeModal}
                         />
                       </div>
-                      <div className="flex items-center justify-center h-full flex-col gap-2 p-8 overflow-scroll">
+                      <div className="flex items-center justify-center h-full flex-col gap-2 px-4 sm:px-6 pb-3 md:py-2 overflow-y-auto max-h-[60vh]">
                         {isConnected && isWrongNetwork && (
                           <Button
                             variant="black"
@@ -185,12 +182,12 @@ function ConnectButton() {
                                   rounded="2xl"
                                   onClick={() => connect({ connector })}
                                   variant="black"
-                                  className="w-full h-full flex flex-row justify-start pt-2 pb-2"
+                                  className="w-full h-full flex flex-row justify-start pt-2 pb-2 !px-2 sm:!px-4"
                                 >
-                                  <div className="rounded-sm bg-white flex flex-row justify-center items-center p-2">
+                                  <div className="rounded-sm bg-white flex flex-row justify-center items-center p-1">
                                     <WalletIcon
                                       id={connector.id}
-                                      className="h-16 w-16"
+                                      className="h-8 w-8 lg:h-10 lg:w-10"
                                       // style={{ maxWidth: "100%" }}
                                     />
                                   </div>
@@ -198,7 +195,7 @@ function ConnectButton() {
                                     style={{ marginLeft: "auto" }}
                                     className="basis-4/5 flex-row items-center justify-center"
                                   >
-                                    <span className="text-xl">
+                                    <span className="text-lg md:text-xl">
                                       {connector.name}
                                       {!connector.ready && " (unsupported)"}
                                       {isLoading &&
