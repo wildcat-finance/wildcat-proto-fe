@@ -35,7 +35,7 @@ export function NewLendersModal({ market }: NewLendersModalProps) {
     mutate: authorize,
     isLoading,
     isSuccess,
-  } = useAuthoriseLenders(lendersAddresses, market.controller)
+  } = useAuthoriseLenders(lendersAddresses, market.controller!)
 
   const handleChangeInput = (evt: ChangeEvent<HTMLInputElement>) => {
     const { value } = evt.target

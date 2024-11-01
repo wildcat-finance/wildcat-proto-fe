@@ -39,7 +39,7 @@ const WithdrawalForm = ({ marketAccount }: WithdrawalFormProps) => {
     const withdrawalAmount =
       marketAccount.market.underlyingToken.parseAmount(value)
 
-    const { status } = marketAccount.checkQueueWithdrawalStep(withdrawalAmount)
+    const { status } = marketAccount.previewQueueWithdrawal(withdrawalAmount)
 
     if (status !== "Ready") {
       setError(SDK_ERRORS_MAPPING.queueWithdrawal[status])

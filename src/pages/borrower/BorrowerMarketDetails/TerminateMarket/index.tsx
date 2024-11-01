@@ -30,14 +30,14 @@ export const TerminateMarket = ({ marketAccount }: TerminateMarketProps) => {
   const { isTxInProgress } = useTransactionWait()
 
   const { market } = marketAccount
-  const terminateMarketStep = marketAccount.checkCloseMarketStep()
+  const terminateMarketStep = marketAccount.previewCloseMarket()
 
   const handleTerminateMarket = () => {
     if (!isTerminating) {
       setIsTerminating(true)
       if (terminateMarketStep.status === "InsufficientAllowance") {
         toastifyInfo(
-          `Need to approve ${terminateMarketStep.remainder.format(
+          `Need to approve ${terminateMarketStep.outstanding.format(
             TOKEN_FORMAT_DECIMALS,
             true,
           )} `,
@@ -51,7 +51,7 @@ export const TerminateMarket = ({ marketAccount }: TerminateMarketProps) => {
     }
 
     if (terminateMarketStep.status === "InsufficientAllowance") {
-      approve(terminateMarketStep.remainder)
+      approve(terminateMarketStep.outstanding)
         .then(() => {
           if (market.unpaidWithdrawalBatchExpiries.length) {
             toastifyInfo(
@@ -81,10 +81,10 @@ export const TerminateMarket = ({ marketAccount }: TerminateMarketProps) => {
     isActive: boolean,
     step: CloseMarketStatus,
   ): [string, ButtonProps["variant"]] => {
-    if (isActive && step.status === "InsufficientAllowance") {
+    if (isActive && step === CloseMarketStatus.InsufficientAllowance) {
       return ["Approve", "green"]
     }
-    if (isActive && step.status === "UnpaidWithdrawalBatches") {
+    if (isActive && step === CloseMarketStatus.UnpaidWithdrawalBatches) {
       return ["Close Unpaid Batch", "green"]
     }
     return ["Terminate Market", "red"]
@@ -92,7 +92,7 @@ export const TerminateMarket = ({ marketAccount }: TerminateMarketProps) => {
 
   const [terminateButtonText, terminateButtonColor] = getButtonTextAndColor(
     isTerminating,
-    terminateMarketStep,
+    terminateMarketStep.status,
   )
 
   const isLoading =

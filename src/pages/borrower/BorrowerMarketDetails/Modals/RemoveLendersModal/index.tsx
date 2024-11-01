@@ -11,7 +11,7 @@ export function RemoveLendersModal({ market }: RemoveLendersModalProps) {
   const { data: lenders } = useGetAuthorisedLendersByMarket(market)
   const { mutate: deauthorize, isSuccess } = useDeauthorizeLenders(
     selectedLenders,
-    market.controller,
+    market.controller!,
   )
 
   const isSelected = (lenderWallet: string) =>

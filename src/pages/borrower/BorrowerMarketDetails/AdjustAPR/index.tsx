@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect, useState } from "react"
 import dayjs from "dayjs"
 
-import { SetAprStatus } from "@wildcatfi/wildcat-sdk"
+import { SetAprPreview, SetAprStatus } from "@wildcatfi/wildcat-sdk"
 import { Button } from "../../../../components/ui-components"
 import { AdjustAPRModal } from "../Modals"
 import {
@@ -38,7 +38,7 @@ const AdjustAPR = ({ marketAccount }: AdjustAprProps) => {
   )
   const { mutateAsync: reset } = useResetReserveRatio(
     marketAccount,
-    marketAccount.market.controller,
+    marketAccount.market.controller!,
   )
 
   const [apr, setApr] = useState("")
@@ -46,7 +46,7 @@ const AdjustAPR = ({ marketAccount }: AdjustAprProps) => {
   const { isTxInProgress, setisTxInProgress } = useTransactionWait()
 
   const [error, setError] = useState<string | undefined>()
-  const [status, setStatus] = useState<SetAprStatus>()
+  const [status, setStatus] = useState<SetAprPreview>()
 
   const { market } = marketAccount
 
@@ -61,7 +61,7 @@ const AdjustAPR = ({ marketAccount }: AdjustAprProps) => {
 
     // If status is not `Ready`, show error message
     const parsedNewApr = parseFloat(value) * 100
-    const checkAPRStep = marketAccount.checkSetAPRStep(parsedNewApr)
+    const checkAPRStep = marketAccount.previewSetAPR(parsedNewApr)
     setStatus(checkAPRStep)
 
     if (checkAPRStep.status === "InsufficientReserves") {

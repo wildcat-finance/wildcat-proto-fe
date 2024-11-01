@@ -1,4 +1,4 @@
-import { Market, SetAprStatus } from "@wildcatfi/wildcat-sdk"
+import { Market, SetAprPreview, SetAprStatus } from "@wildcatfi/wildcat-sdk"
 import dayjs from "dayjs"
 import cn from "classnames"
 import { ChangeEvent, ReactNode, useState } from "react"
@@ -69,7 +69,7 @@ const NewReserveRatioMessage = ({
   market,
   newAPR,
 }: {
-  status: SetAprStatus
+  status: SetAprPreview
   market: Market
   newAPR: number
 }) => {
@@ -125,7 +125,7 @@ const NewReserveRatioMessage = ({
   )
 }
 
-const NewRequiredReserves = ({ status }: { status: SetAprStatus }) => {
+const NewRequiredReserves = ({ status }: { status: SetAprPreview }) => {
   if (
     status.status !== "InsufficientReserves" &&
     !(status.status === "Ready" && status.willChangeReserveRatio)
@@ -155,7 +155,7 @@ type OtherProps = {
   error: string | undefined
   onChange: (evt: ChangeEvent<HTMLInputElement>) => void
   apr: string
-  status: SetAprStatus | undefined
+  status: SetAprPreview | undefined
 }
 
 export const AdjustAPRModal = ({

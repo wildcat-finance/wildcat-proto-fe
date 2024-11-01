@@ -21,7 +21,7 @@ export const useDepositForm = (marketAccount: MarketAccount) => {
               marketAccount.market.underlyingToken.parseAmount(
                 depositAmount || "0",
               )
-            const { status } = marketAccount.checkDepositStep(tokenAmount)
+            const { status } = marketAccount.previewDeposit(tokenAmount)
 
             if (status !== "Ready" && status !== "InsufficientAllowance") {
               ctx.addIssue({

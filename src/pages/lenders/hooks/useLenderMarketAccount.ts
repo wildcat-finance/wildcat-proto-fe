@@ -54,16 +54,16 @@ export function useLenderMarketAccountQuery({
       },
     })
     if (!result.data.market!.lenders.length) {
-      return new MarketAccount(
-        lenderAddress as string,
-        false,
-        LenderRole.Null,
-        BigNumber.from(0),
-        market!.marketToken.getAmount(0),
-        market!.underlyingToken.getAmount(0),
-        BigNumber.from(0),
-        market!,
-      )
+      return new MarketAccount({
+        account: lenderAddress as string,
+        isAuthorizedOnController: false,
+        role: LenderRole.Null,
+        scaledMarketBalance: BigNumber.from(0),
+        marketBalance: market!.marketToken.getAmount(0),
+        underlyingBalance: market!.underlyingToken.getAmount(0),
+        underlyingApproval: BigNumber.from(0),
+        market: market!,
+      })
     }
     return MarketAccount.fromSubgraphAccountData(
       market as Market,

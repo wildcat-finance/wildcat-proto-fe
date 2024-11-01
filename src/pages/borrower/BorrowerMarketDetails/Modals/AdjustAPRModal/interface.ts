@@ -1,4 +1,8 @@
-import { MarketAccount, SetAprStatus } from "@wildcatfi/wildcat-sdk"
+import {
+  MarketAccount,
+  SetAprPreview,
+  SetAprStatus,
+} from "@wildcatfi/wildcat-sdk"
 import { ChangeEvent } from "react"
 
 export type AdjustAprModalProps = {
@@ -9,7 +13,7 @@ export type AdjustAprModalProps = {
   error: string | undefined
   onChange: (evt: ChangeEvent<HTMLInputElement>) => void
   apr: string
-  status: SetAprStatus | undefined
+  status: SetAprPreview | undefined
   newReserveRatio: number | undefined
   reserveRatioChanged: boolean
   isLoading: boolean

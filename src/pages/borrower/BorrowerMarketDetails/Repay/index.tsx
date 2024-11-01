@@ -70,7 +70,7 @@ const Repay = ({ marketAccount }: RepayProps) => {
       value || "0",
     )
 
-    const repayStep = marketAccount.checkRepayStep(repayTokenAmount)
+    const repayStep = marketAccount.previewRepay(repayTokenAmount)
 
     if (repayStep.status !== "Ready") {
       if (
@@ -90,7 +90,7 @@ const Repay = ({ marketAccount }: RepayProps) => {
     () => marketAccount.market.underlyingToken.parseAmount(repayAmount || "0"),
     [repayAmount],
   )
-  const repayStep = marketAccount.checkRepayStep(repayTokenAmount)
+  const repayStep = marketAccount.previewRepay(repayTokenAmount)
 
   const isLoading =
     isRepayAmountLoading ||

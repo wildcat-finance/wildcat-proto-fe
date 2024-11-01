@@ -11,6 +11,7 @@ import {
   Market,
   getLensContract,
   SignerOrProvider,
+  MarketVersion,
 } from "@wildcatfi/wildcat-sdk"
 import { logger } from "@wildcatfi/wildcat-sdk/dist/utils/logger"
 import { POLLING_INTERVAL } from "../../../config/polling"
@@ -65,26 +66,25 @@ export function useMarketsForBorrowerQuery({
       SubgraphGetMarketsForBorrowerQueryVariables
     >({
       query: GetMarketsForBorrowerDocument,
-      variables: { borrower: borrower as string, ...filters },
+      variables: {
+        borrower: borrower as string,
+        ...filters,
+        marketFilter: {
+          version: MarketVersion.V1,
+        },
+      },
       fetchPolicy: "network-only",
     })
 
-    const controller = result.data.controllers[0]
-    if (controller) {
-      return (
-        controller.markets
-          .filter((m) => !!m.controller)
-          .map((market) =>
-            Market.fromSubgraphMarketData(
-              TargetChainId,
-              provider as SignerOrProvider,
-              market,
-            ),
-          ) ?? []
+    return result.data.markets
+      .filter((m) => !!m.controller)
+      .map((market) =>
+        Market.fromSubgraphMarketData(
+          TargetChainId,
+          provider as SignerOrProvider,
+          market,
+        ),
       )
-    }
-
-    return []
   }
 
   async function updateMarkets(markets: Market[]) {

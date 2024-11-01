@@ -14,7 +14,7 @@ export const useAllowanceCheck = (
 
   useEffect(() => {
     if (!tokenAmount.raw.isZero()) {
-      const { status } = marketAccount.checkDepositStep(tokenAmount)
+      const { status } = marketAccount.previewDeposit(tokenAmount)
 
       if (status === "InsufficientAllowance" && !hasInsufficientAllowance) {
         setInsufficientAllowance(true)

@@ -16,6 +16,7 @@ import {
   MarketAccount,
   getLensContract,
   TwoStepQueryHookResult,
+  MarketVersion,
 } from "@wildcatfi/wildcat-sdk"
 import { logger } from "@wildcatfi/wildcat-sdk/dist/utils/logger"
 import { constants } from "ethers"
@@ -69,6 +70,9 @@ export function useLendersMarkets({
       variables: {
         ...filters,
         lender,
+        marketFilter: {
+          version: MarketVersion.V1,
+        },
       },
       fetchPolicy: "network-only",
     })

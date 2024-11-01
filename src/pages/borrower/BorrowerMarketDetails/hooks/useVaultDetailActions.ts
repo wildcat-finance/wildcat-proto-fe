@@ -160,7 +160,7 @@ export const useProcessUnpaidWithdrawalBatch = (
       }
 
       const processWithdrawalBatch = async () => {
-        const { status } = marketAccount.checkRepayStep(tokenAmount)
+        const { status } = marketAccount.previewRepay(tokenAmount)
         if (isConnectedToSafe && status === "InsufficientAllowance") {
           const gnosisTransactions = [
             await marketAccount.populateApproveMarket(tokenAmount),
@@ -219,7 +219,7 @@ export const useDeposit = (
         marketAccount.market.underlyingToken,
       )
 
-      const checkCanDeposit = marketAccount.checkDepositStep(tokenAmount)
+      const checkCanDeposit = marketAccount.previewDeposit(tokenAmount)
 
       const deposit = async () => {
         if (
@@ -377,7 +377,7 @@ export const useRepay = (marketAccount: MarketAccount) => {
         return
       }
 
-      const step = marketAccount.checkRepayStep(amount)
+      const step = marketAccount.previewRepay(amount)
       const gnosisTransactions: BaseTransaction[] = []
       if (step.status !== "Ready") {
         if (isConnectedToSafe && step.status === "InsufficientAllowance") {
