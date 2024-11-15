@@ -17,6 +17,7 @@ export const TerminateMarket = ({ marketAccount }: TerminateMarketProps) => {
   const { mutateAsync: approve, isLoading: isApproving } = useApprove(
     marketAccount.market.underlyingToken,
     marketAccount.market,
+    marketAccount.underlyingApproval,
   )
   const {
     mutateAsync: repayAndProcessUnpaidWithdrawalBatch,

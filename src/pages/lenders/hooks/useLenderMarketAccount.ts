@@ -117,7 +117,7 @@ export function useLenderMarketAccountQuery({
     ],
     queryFn: updateMarketAccount,
     refetchInterval: POLLING_INTERVAL,
-    keepPreviousData: true,
+    // keepPreviousData: true,
     enabled: !!data,
     refetchOnMount: false,
   })
