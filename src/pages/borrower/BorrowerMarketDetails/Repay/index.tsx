@@ -48,6 +48,7 @@ const Repay = ({ marketAccount }: RepayProps) => {
   const { mutate: approve, isLoading: isApproving } = useApprove(
     marketAccount.market.underlyingToken,
     marketAccount.market,
+    marketAccount.underlyingApproval,
   )
 
   const [error, setError] = useState<string | undefined>()

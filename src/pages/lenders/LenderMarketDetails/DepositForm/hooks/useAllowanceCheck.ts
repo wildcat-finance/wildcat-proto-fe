@@ -10,6 +10,7 @@ export const useAllowanceCheck = (
   const { mutate: approve, isLoading: isApproving } = useApprove(
     marketAccount.market.underlyingToken,
     marketAccount.market,
+    marketAccount.underlyingApproval,
   )
 
   useEffect(() => {

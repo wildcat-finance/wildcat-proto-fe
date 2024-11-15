@@ -11,7 +11,7 @@ import { parseUnits } from "ethers/lib/utils"
 import { WildcatMarketController } from "@wildcatfi/wildcat-sdk/dist/typechain"
 import { BaseTransaction } from "@safe-global/safe-apps-sdk"
 import { useAccount } from "wagmi"
-import { ContractTransaction } from "ethers"
+import { BigNumber, ContractTransaction } from "ethers"
 import { useEthersSigner } from "../../../../modules/hooks"
 import {
   toastifyError,
@@ -30,6 +30,7 @@ import { useGetMarketsForController } from "./useGetMarketsForController"
 import { GET_LENDERS_BY_MARKET_KEY } from "./useGetAuthorisedLenders"
 import { useGnosisSafeSDK } from "../../../../hooks/useGnosisSafeSDK"
 import { waitForSubgraphSync } from "../../../../utils/waitForSubgraphSync"
+import { GET_LENDER_MARKET_ACCOUNT_KEY } from "../../../lenders/hooks/useLenderMarketAccount"
 
 export const useBorrow = (marketAccount: MarketAccount) => {
   const signer = useEthersSigner()
@@ -101,7 +102,16 @@ export const useGetAllowance = (token: Token) => {
   })
 }
 
-export const useApprove = (token: Token, market: Market) => {
+const USDT_ADDRESSES = [
+  "0xdac17f958d2ee523a2206206994597c13d831ec7",
+  "0x4e1acc8699618cf4b487346c5dd7c6dec4e11321",
+]
+
+export const useApprove = (
+  token: Token,
+  market: Market,
+  currentAllowance?: BigNumber,
+) => {
   const client = useQueryClient()
 
   return useMutation({
@@ -118,21 +128,53 @@ export const useApprove = (token: Token, market: Market) => {
         return tx.wait()
       }
 
-      const receipt = await toastifyRequest(approve(), {
-        pending: `Approving ${tokenAmount.format(
-          tokenAmount.token.decimals,
-          true,
-        )}...`,
-        success: `Successfully Approved ${tokenAmount.format(
-          tokenAmount.token.decimals,
-          true,
-        )}!`,
-        error: `Error: ${token.symbol} Approval Failed`,
-      })
-      await waitForSubgraphSync(receipt.blockNumber)
+      // for USDT, approvals must be reset to 0 before they can be updated
+      if (
+        USDT_ADDRESSES.includes(tokenAmount.token.address.toLowerCase()) &&
+        currentAllowance?.gt(0)
+      ) {
+        const resetAllowance = async () => {
+          const tx = await token.contract.approve(
+            market.address.toLowerCase(),
+            0,
+          )
+          return tx.wait()
+        }
+        await toastifyRequest(resetAllowance(), {
+          pending: `Step 1/2: Resetting allowance for ${tokenAmount.token.symbol}...`,
+          success: `Step 1/2: Successfully reset allowance for ${tokenAmount.token.symbol}!`,
+          error: `Error: Reset allowance for ${token.symbol} failed`,
+        })
+        const receipt = await toastifyRequest(approve(), {
+          pending: `Step 2/2: Approving ${tokenAmount.format(
+            tokenAmount.token.decimals,
+            true,
+          )}...`,
+          success: `Successfully Approved ${tokenAmount.format(
+            tokenAmount.token.decimals,
+            true,
+          )}!`,
+          error: `Error: Approval for ${token.symbol} failed`,
+        })
+        await waitForSubgraphSync(receipt.blockNumber)
+      } else {
+        const receipt = await toastifyRequest(approve(), {
+          pending: `Approving ${tokenAmount.format(
+            tokenAmount.token.decimals,
+            true,
+          )}...`,
+          success: `Successfully Approved ${tokenAmount.format(
+            tokenAmount.token.decimals,
+            true,
+          )}!`,
+          error: `Error: ${token.symbol} Approval Failed`,
+        })
+        await waitForSubgraphSync(receipt.blockNumber)
+      }
     },
     onSuccess() {
       client.invalidateQueries({ queryKey: [GET_MARKET_ACCOUNT_KEY] })
+      client.invalidateQueries({ queryKey: [GET_LENDER_MARKET_ACCOUNT_KEY] })
       client.invalidateQueries({
         queryKey: [GET_BORROWER_MARKET_ACCOUNT_LEGACY_KEY],
       })
@@ -230,6 +272,17 @@ export const useDeposit = (
             await marketAccount.populateApproveMarket(tokenAmount),
             await marketAccount.populateDeposit(tokenAmount),
           ]
+          // for USDT, approvals must be reset to 0 before they can be updated
+          if (
+            USDT_ADDRESSES.includes(tokenAmount.token.address.toLowerCase()) &&
+            marketAccount.underlyingApproval.gt(0)
+          ) {
+            gnosisTransactions.unshift(
+              await marketAccount.populateApproveMarket(
+                tokenAmount.token.getAmount(0),
+              ),
+            )
+          }
           const tx = await sendGnosisTransactions(gnosisTransactions)
           return tx.wait()
         }

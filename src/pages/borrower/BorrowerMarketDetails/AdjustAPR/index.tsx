@@ -35,6 +35,7 @@ const AdjustAPR = ({ marketAccount }: AdjustAprProps) => {
   const { isLoading: isApproving } = useApprove(
     marketAccount.market.underlyingToken,
     marketAccount.market,
+    marketAccount.underlyingApproval,
   )
   const { mutateAsync: reset } = useResetReserveRatio(
     marketAccount,
