@@ -137,7 +137,8 @@ export function useLenderMarketAccountQuery({
 }
 
 export const useLenderMarketAccount = (market: Market | undefined) => {
-  const { address, signer, provider, isWrongNetwork } = useEthersProvider()
+  const { signer, provider, isWrongNetwork } = useEthersProvider()
+  const { address } = useAccount()
   const signerOrProvider = signer ?? provider
 
   return useLenderMarketAccountQuery({
